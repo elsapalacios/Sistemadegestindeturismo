@@ -230,6 +230,70 @@ app.get('/api/reservas/usuario/:userId', async (req, res) => {
   }
 });
 
+// ── Admin ──────────────────────────────────────────────────────────────────
+
+app.get('/api/admin/stats', async (req, res) => {
+  try {
+    const [[{ usuarios }]] = await pool.query('SELECT COUNT(*) AS usuarios FROM usuarios');
+    const [[{ reservas }]] = await pool.query('SELECT COUNT(*) AS reservas FROM reservas');
+    const [[{ opiniones }]] = await pool.query('SELECT COUNT(*) AS opiniones FROM opiniones');
+    const [[{ promedio }]] = await pool.query('SELECT ROUND(AVG(rating), 1) AS promedio FROM opiniones');
+    const [porTipo] = await pool.query('SELECT tipo, COUNT(*) AS total FROM reservas GROUP BY tipo');
+    res.json({ usuarios, reservas, opiniones, promedio: promedio ?? 0, porTipo });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.get('/api/admin/reservas', async (req, res) => {
+  try {
+    const [rows] = await pool.query('SELECT * FROM reservas ORDER BY createdAt DESC');
+    res.json(rows);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.patch('/api/admin/reservas/:id', async (req, res) => {
+  const { estado } = req.body;
+  if (!['pendiente', 'confirmada', 'cancelada'].includes(estado)) {
+    return res.status(400).json({ error: 'Estado inválido' });
+  }
+  try {
+    await pool.query('UPDATE reservas SET estado = ? WHERE id = ?', [estado, req.params.id]);
+    res.json({ ok: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.get('/api/admin/usuarios', async (req, res) => {
+  try {
+    const [rows] = await pool.query('SELECT id, name, email FROM usuarios ORDER BY rowid DESC');
+    res.json(rows);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.get('/api/admin/opiniones', async (req, res) => {
+  try {
+    const [rows] = await pool.query('SELECT * FROM opiniones ORDER BY date DESC');
+    res.json(rows);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.delete('/api/admin/opiniones/:id', async (req, res) => {
+  try {
+    await pool.query('DELETE FROM opiniones WHERE id = ?', [req.params.id]);
+    res.json({ ok: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 app.listen(PORT, async () => {
   console.log(`Server listening on port ${PORT}`);
   await initDB();

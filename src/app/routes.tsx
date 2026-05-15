@@ -10,6 +10,7 @@ import { Tours } from './pages/Tours';
 import { Historia } from './pages/Historia';
 import { Opiniones } from './pages/Opiniones';
 import { MisReservas } from './pages/MisReservas';
+import { Admin } from './pages/Admin';
 
 function Layout({ children }: { children: React.ReactNode }) {
   return (
@@ -73,6 +74,10 @@ export const router = createBrowserRouter([
   {
     path: '/mis-reservas',
     element: <Layout><MisReservas /></Layout>
+  },
+  {
+    path: '/admin',
+    element: <Layout><Admin /></Layout>
   },
   {
     path: '*',

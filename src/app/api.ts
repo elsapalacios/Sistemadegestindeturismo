@@ -60,4 +60,26 @@ export const api = {
 
   getReservasByUser: (userId: string) =>
     request<Reserva[]>(`${BASE}/api/reservas/usuario/${userId}`),
+
+  // Admin
+  getAdminStats: () => request<{
+    usuarios: number; reservas: number; opiniones: number; promedio: number;
+    porTipo: { tipo: string; total: number }[];
+  }>(`${BASE}/api/admin/stats`),
+
+  getAdminReservas: () => request<Reserva[]>(`${BASE}/api/admin/reservas`),
+
+  patchReservaEstado: (id: string, estado: string) =>
+    request<{ ok: boolean }>(`${BASE}/api/admin/reservas/${id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ estado }),
+    }),
+
+  getAdminUsuarios: () => request<User[]>(`${BASE}/api/admin/usuarios`),
+
+  getAdminOpiniones: () => request<Opinion[]>(`${BASE}/api/admin/opiniones`),
+
+  deleteOpinion: (id: string) =>
+    request<{ ok: boolean }>(`${BASE}/api/admin/opiniones/${id}`, { method: 'DELETE' }),
 };

@@ -24,6 +24,7 @@ export function Navbar() {
     { to: '/historia', label: 'Historia' },
     { to: '/opiniones', label: 'Opiniones' },
     ...(isAuthenticated ? [{ to: '/mis-reservas', label: 'Mis Reservas' }] : []),
+    ...(user?.email === 'elsapalacios@gmail.com' ? [{ to: '/admin', label: 'Admin' }] : []),
   ];
 
   return (
