@@ -82,4 +82,42 @@ export const api = {
 
   deleteOpinion: (id: string) =>
     request<{ ok: boolean }>(`${BASE}/api/admin/opiniones/${id}`, { method: 'DELETE' }),
+
+  // Admin CRUD — helper
+  _crud: (path: string, method: string, body?: any) =>
+    request<any>(`${BASE}${path}`, {
+      method,
+      headers: body ? { 'Content-Type': 'application/json' } : undefined,
+      body: body ? JSON.stringify(body) : undefined,
+    }),
+
+  // Zonas
+  createZona: (d: any) => request<any>(`${BASE}/api/admin/zonas`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(d) }),
+  updateZona: (id: string, d: any) => request<any>(`${BASE}/api/admin/zonas/${id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(d) }),
+  deleteZona: (id: string) => request<any>(`${BASE}/api/admin/zonas/${id}`, { method: 'DELETE' }),
+
+  // Eventos
+  createEvento: (d: any) => request<any>(`${BASE}/api/admin/eventos`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(d) }),
+  updateEvento: (id: string, d: any) => request<any>(`${BASE}/api/admin/eventos/${id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(d) }),
+  deleteEvento: (id: string) => request<any>(`${BASE}/api/admin/eventos/${id}`, { method: 'DELETE' }),
+
+  // Hospedajes
+  createHospedaje: (d: any) => request<any>(`${BASE}/api/admin/hospedajes`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(d) }),
+  updateHospedaje: (id: string, d: any) => request<any>(`${BASE}/api/admin/hospedajes/${id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(d) }),
+  deleteHospedaje: (id: string) => request<any>(`${BASE}/api/admin/hospedajes/${id}`, { method: 'DELETE' }),
+
+  // Restaurantes
+  createRestaurante: (d: any) => request<any>(`${BASE}/api/admin/restaurantes`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(d) }),
+  updateRestaurante: (id: string, d: any) => request<any>(`${BASE}/api/admin/restaurantes/${id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(d) }),
+  deleteRestaurante: (id: string) => request<any>(`${BASE}/api/admin/restaurantes/${id}`, { method: 'DELETE' }),
+
+  // Tours
+  createTour: (d: any) => request<any>(`${BASE}/api/admin/tours`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(d) }),
+  updateTour: (id: string, d: any) => request<any>(`${BASE}/api/admin/tours/${id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(d) }),
+  deleteTour: (id: string) => request<any>(`${BASE}/api/admin/tours/${id}`, { method: 'DELETE' }),
+
+  // Platos
+  createPlato: (d: any) => request<any>(`${BASE}/api/admin/platos`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(d) }),
+  updatePlato: (id: string, d: any) => request<any>(`${BASE}/api/admin/platos/${id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(d) }),
+  deletePlato: (id: string) => request<any>(`${BASE}/api/admin/platos/${id}`, { method: 'DELETE' }),
 };

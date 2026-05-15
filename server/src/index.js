@@ -230,6 +230,160 @@ app.get('/api/reservas/usuario/:userId', async (req, res) => {
   }
 });
 
+// ── Admin CRUD helpers ─────────────────────────────────────────────────────
+
+async function replaceSubItems(table, fkCol, parentId, itemCol, items) {
+  await pool.query(`DELETE FROM \`${table}\` WHERE \`${fkCol}\` = ?`, [parentId]);
+  if (items && items.length > 0) {
+    const vals = items.map(v => [parentId, v]);
+    await pool.query(`INSERT INTO \`${table}\` (\`${fkCol}\`, \`${itemCol}\`) VALUES ?`, [vals]);
+  }
+}
+
+// ── CRUD: Zonas emblemáticas ───────────────────────────────────────────────
+app.post('/api/admin/zonas', async (req, res) => {
+  const { nombre, descripcion, imagen } = req.body;
+  const id = randomUUID();
+  try {
+    await pool.query('INSERT INTO zonas_emblematicas (id,nombre,descripcion,imagen) VALUES (?,?,?,?)', [id, nombre, descripcion, imagen]);
+    res.status(201).json({ id, nombre, descripcion, imagen });
+  } catch (err) { res.status(500).json({ error: err.message }); }
+});
+app.put('/api/admin/zonas/:id', async (req, res) => {
+  const { nombre, descripcion, imagen } = req.body;
+  try {
+    await pool.query('UPDATE zonas_emblematicas SET nombre=?,descripcion=?,imagen=? WHERE id=?', [nombre, descripcion, imagen, req.params.id]);
+    res.json({ ok: true });
+  } catch (err) { res.status(500).json({ error: err.message }); }
+});
+app.delete('/api/admin/zonas/:id', async (req, res) => {
+  try {
+    await pool.query('DELETE FROM zonas_emblematicas WHERE id=?', [req.params.id]);
+    res.json({ ok: true });
+  } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
+// ── CRUD: Eventos culturales ───────────────────────────────────────────────
+app.post('/api/admin/eventos', async (req, res) => {
+  const { nombre, fecha, descripcion, imagen, ubicacion } = req.body;
+  const id = randomUUID();
+  try {
+    await pool.query('INSERT INTO eventos_culturales (id,nombre,fecha,descripcion,imagen,ubicacion) VALUES (?,?,?,?,?,?)', [id, nombre, fecha, descripcion, imagen, ubicacion]);
+    res.status(201).json({ id, nombre, fecha, descripcion, imagen, ubicacion });
+  } catch (err) { res.status(500).json({ error: err.message }); }
+});
+app.put('/api/admin/eventos/:id', async (req, res) => {
+  const { nombre, fecha, descripcion, imagen, ubicacion } = req.body;
+  try {
+    await pool.query('UPDATE eventos_culturales SET nombre=?,fecha=?,descripcion=?,imagen=?,ubicacion=? WHERE id=?', [nombre, fecha, descripcion, imagen, ubicacion, req.params.id]);
+    res.json({ ok: true });
+  } catch (err) { res.status(500).json({ error: err.message }); }
+});
+app.delete('/api/admin/eventos/:id', async (req, res) => {
+  try {
+    await pool.query('DELETE FROM eventos_culturales WHERE id=?', [req.params.id]);
+    res.json({ ok: true });
+  } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
+// ── CRUD: Hospedajes ───────────────────────────────────────────────────────
+app.post('/api/admin/hospedajes', async (req, res) => {
+  const { nombre, descripcion, precio, imagen, direccion, telefono, servicios } = req.body;
+  const id = randomUUID();
+  try {
+    await pool.query('INSERT INTO hospedajes (id,nombre,descripcion,precio,imagen,direccion,telefono) VALUES (?,?,?,?,?,?,?)', [id, nombre, descripcion, precio, imagen, direccion, telefono]);
+    await replaceSubItems('hospedajes_servicios', 'hospedajeId', id, 'servicio', servicios);
+    res.status(201).json({ id, nombre, descripcion, precio, imagen, direccion, telefono, servicios });
+  } catch (err) { res.status(500).json({ error: err.message }); }
+});
+app.put('/api/admin/hospedajes/:id', async (req, res) => {
+  const { nombre, descripcion, precio, imagen, direccion, telefono, servicios } = req.body;
+  try {
+    await pool.query('UPDATE hospedajes SET nombre=?,descripcion=?,precio=?,imagen=?,direccion=?,telefono=? WHERE id=?', [nombre, descripcion, precio, imagen, direccion, telefono, req.params.id]);
+    await replaceSubItems('hospedajes_servicios', 'hospedajeId', req.params.id, 'servicio', servicios);
+    res.json({ ok: true });
+  } catch (err) { res.status(500).json({ error: err.message }); }
+});
+app.delete('/api/admin/hospedajes/:id', async (req, res) => {
+  try {
+    await pool.query('DELETE FROM hospedajes WHERE id=?', [req.params.id]);
+    res.json({ ok: true });
+  } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
+// ── CRUD: Restaurantes ─────────────────────────────────────────────────────
+app.post('/api/admin/restaurantes', async (req, res) => {
+  const { nombre, descripcion, especialidad, imagen, horario, direccion, telefono, precioPromedio } = req.body;
+  const id = randomUUID();
+  try {
+    await pool.query('INSERT INTO restaurantes (id,nombre,descripcion,especialidad,imagen,horario,direccion,telefono,precioPromedio) VALUES (?,?,?,?,?,?,?,?,?)', [id, nombre, descripcion, especialidad, imagen, horario, direccion, telefono, precioPromedio]);
+    res.status(201).json({ id, nombre, descripcion, especialidad, imagen, horario, direccion, telefono, precioPromedio });
+  } catch (err) { res.status(500).json({ error: err.message }); }
+});
+app.put('/api/admin/restaurantes/:id', async (req, res) => {
+  const { nombre, descripcion, especialidad, imagen, horario, direccion, telefono, precioPromedio } = req.body;
+  try {
+    await pool.query('UPDATE restaurantes SET nombre=?,descripcion=?,especialidad=?,imagen=?,horario=?,direccion=?,telefono=?,precioPromedio=? WHERE id=?', [nombre, descripcion, especialidad, imagen, horario, direccion, telefono, precioPromedio, req.params.id]);
+    res.json({ ok: true });
+  } catch (err) { res.status(500).json({ error: err.message }); }
+});
+app.delete('/api/admin/restaurantes/:id', async (req, res) => {
+  try {
+    await pool.query('DELETE FROM restaurantes WHERE id=?', [req.params.id]);
+    res.json({ ok: true });
+  } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
+// ── CRUD: Tours ────────────────────────────────────────────────────────────
+app.post('/api/admin/tours', async (req, res) => {
+  const { nombre, descripcion, duracion, precio, imagen, dificultad, incluye } = req.body;
+  const id = randomUUID();
+  try {
+    await pool.query('INSERT INTO tours (id,nombre,descripcion,duracion,precio,imagen,dificultad) VALUES (?,?,?,?,?,?,?)', [id, nombre, descripcion, duracion, precio, imagen, dificultad]);
+    await replaceSubItems('tours_incluye', 'tourId', id, 'item', incluye);
+    res.status(201).json({ id, nombre, descripcion, duracion, precio, imagen, dificultad, incluye });
+  } catch (err) { res.status(500).json({ error: err.message }); }
+});
+app.put('/api/admin/tours/:id', async (req, res) => {
+  const { nombre, descripcion, duracion, precio, imagen, dificultad, incluye } = req.body;
+  try {
+    await pool.query('UPDATE tours SET nombre=?,descripcion=?,duracion=?,precio=?,imagen=?,dificultad=? WHERE id=?', [nombre, descripcion, duracion, precio, imagen, dificultad, req.params.id]);
+    await replaceSubItems('tours_incluye', 'tourId', req.params.id, 'item', incluye);
+    res.json({ ok: true });
+  } catch (err) { res.status(500).json({ error: err.message }); }
+});
+app.delete('/api/admin/tours/:id', async (req, res) => {
+  try {
+    await pool.query('DELETE FROM tours WHERE id=?', [req.params.id]);
+    res.json({ ok: true });
+  } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
+// ── CRUD: Platos típicos ───────────────────────────────────────────────────
+app.post('/api/admin/platos', async (req, res) => {
+  const { nombre, descripcion, imagen, ingredientes } = req.body;
+  const id = randomUUID();
+  try {
+    await pool.query('INSERT INTO platos_tipicos (id,nombre,descripcion,imagen) VALUES (?,?,?,?)', [id, nombre, descripcion, imagen]);
+    await replaceSubItems('platos_ingredientes', 'platoId', id, 'ingrediente', ingredientes);
+    res.status(201).json({ id, nombre, descripcion, imagen, ingredientes });
+  } catch (err) { res.status(500).json({ error: err.message }); }
+});
+app.put('/api/admin/platos/:id', async (req, res) => {
+  const { nombre, descripcion, imagen, ingredientes } = req.body;
+  try {
+    await pool.query('UPDATE platos_tipicos SET nombre=?,descripcion=?,imagen=? WHERE id=?', [nombre, descripcion, imagen, req.params.id]);
+    await replaceSubItems('platos_ingredientes', 'platoId', req.params.id, 'ingrediente', ingredientes);
+    res.json({ ok: true });
+  } catch (err) { res.status(500).json({ error: err.message }); }
+});
+app.delete('/api/admin/platos/:id', async (req, res) => {
+  try {
+    await pool.query('DELETE FROM platos_tipicos WHERE id=?', [req.params.id]);
+    res.json({ ok: true });
+  } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
 // ── Admin ──────────────────────────────────────────────────────────────────
 
 app.get('/api/admin/stats', async (req, res) => {
