@@ -11,9 +11,9 @@ app.use(express.json());
 
 const PORT = process.env.PORT || 4000;
 
-// Insertar usuario de prueba si no existe al arrancar
-async function seedTestUser() {
+async function initDB() {
   try {
+    // Usuario de prueba
     const [existing] = await pool.query('SELECT id FROM usuarios WHERE email = ?', ['elsapalacios@gmail.com']);
     if (existing.length === 0) {
       await pool.query(
@@ -21,8 +21,24 @@ async function seedTestUser() {
         [randomUUID(), 'Elsa Palacios', 'elsapalacios@gmail.com', '1234567P']
       );
     }
+    // Tabla de reservas
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS reservas (
+        id VARCHAR(36) NOT NULL PRIMARY KEY,
+        tipo VARCHAR(20) NOT NULL,
+        itemId VARCHAR(36) NOT NULL,
+        itemNombre VARCHAR(200) NOT NULL,
+        userId VARCHAR(36) NOT NULL,
+        userName VARCHAR(100) NOT NULL,
+        fecha DATE NOT NULL,
+        personas INT NOT NULL DEFAULT 1,
+        notas TEXT,
+        estado VARCHAR(20) DEFAULT 'pendiente',
+        createdAt DATETIME DEFAULT CURRENT_TIMESTAMP
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+    `);
   } catch (err) {
-    console.error('Error al crear usuario de prueba:', err.message);
+    console.error('Error en initDB:', err.message);
   }
 }
 
@@ -185,7 +201,36 @@ app.post('/api/auth/login', async (req, res) => {
   }
 });
 
+app.post('/api/reservas', async (req, res) => {
+  const { tipo, itemId, itemNombre, userId, userName, fecha, personas, notas } = req.body;
+  if (!tipo || !itemId || !itemNombre || !userId || !userName || !fecha) {
+    return res.status(400).json({ error: 'Faltan campos requeridos' });
+  }
+  try {
+    const id = randomUUID();
+    await pool.query(
+      'INSERT INTO reservas (id, tipo, itemId, itemNombre, userId, userName, fecha, personas, notas) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
+      [id, tipo, itemId, itemNombre, userId, userName, fecha, personas || 1, notas || null]
+    );
+    res.status(201).json({ id, tipo, itemId, itemNombre, userId, userName, fecha, personas, notas, estado: 'pendiente' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.get('/api/reservas/usuario/:userId', async (req, res) => {
+  try {
+    const [rows] = await pool.query(
+      'SELECT * FROM reservas WHERE userId = ? ORDER BY createdAt DESC',
+      [req.params.userId]
+    );
+    res.json(rows);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 app.listen(PORT, async () => {
   console.log(`Server listening on port ${PORT}`);
-  await seedTestUser();
+  await initDB();
 });

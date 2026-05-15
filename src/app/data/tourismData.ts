@@ -81,3 +81,17 @@ export interface HistoriaQuibdo {
   biodiversidad: string;
   gastronomia: string;
 }
+
+export interface Reserva {
+  id: string;
+  tipo: 'hospedaje' | 'tour';
+  itemId: string;
+  itemNombre: string;
+  userId: string;
+  userName: string;
+  fecha: string;
+  personas: number;
+  notas?: string;
+  estado: string;
+  createdAt: string;
+}

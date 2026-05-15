@@ -6,9 +6,11 @@ import { Compass, Clock, DollarSign, CheckCircle2, TrendingUp } from 'lucide-rea
 import { ImageWithFallback } from '../components/figma/ImageWithFallback';
 import { api } from '../api';
 import type { Tour } from '../data/tourismData';
+import { ReservaModal } from '../components/ReservaModal';
 
 export function Tours() {
   const [tours, setTours] = useState<Tour[]>([]);
+  const [reservando, setReservando] = useState<Tour | null>(null);
 
   useEffect(() => {
     api.getTours().then(setTours).catch(() => {});
@@ -22,7 +24,6 @@ export function Tours() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
       <div className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center gap-3 mb-4">
@@ -41,7 +42,6 @@ export function Tours() {
           {tours.map(tour => (
             <Card key={tour.id} className="overflow-hidden hover:shadow-xl transition-shadow">
               <div className="grid md:grid-cols-5 gap-0">
-                {/* Imagen */}
                 <div className="md:col-span-2 h-64 md:h-auto overflow-hidden">
                   <ImageWithFallback
                     src={tour.imagen}
@@ -50,7 +50,6 @@ export function Tours() {
                   />
                 </div>
 
-                {/* Contenido */}
                 <div className="md:col-span-3 p-6">
                   <div className="flex flex-col h-full">
                     <div className="flex-1">
@@ -63,7 +62,6 @@ export function Tours() {
 
                       <p className="text-gray-600 mb-4">{tour.descripcion}</p>
 
-                      {/* Información rápida */}
                       <div className="grid grid-cols-2 gap-4 mb-4">
                         <div className="flex items-center gap-2 text-gray-700">
                           <Clock className="size-5 text-blue-600" />
@@ -81,7 +79,6 @@ export function Tours() {
                         </div>
                       </div>
 
-                      {/* Lo que incluye */}
                       <div className="mb-4">
                         <h3 className="text-sm text-gray-500 mb-2">El tour incluye:</h3>
                         <div className="grid grid-cols-2 gap-2">
@@ -95,13 +92,17 @@ export function Tours() {
                       </div>
                     </div>
 
-                    {/* Botones */}
                     <div className="flex gap-3 mt-4">
-                      <Button className="flex-1 bg-blue-600 hover:bg-blue-700">
+                      <Button
+                        className="flex-1 bg-blue-600 hover:bg-blue-700"
+                        onClick={() => setReservando(tour)}
+                      >
                         Reservar Tour
                       </Button>
-                      <Button variant="outline" className="flex-1">
-                        Más Detalles
+                      <Button variant="outline" className="flex-1" asChild>
+                        <a href="https://wa.me/573000000000" target="_blank" rel="noopener noreferrer">
+                          Consultar
+                        </a>
                       </Button>
                     </div>
                   </div>
@@ -111,7 +112,6 @@ export function Tours() {
           ))}
         </div>
 
-        {/* Recomendaciones */}
         <div className="mt-12 grid md:grid-cols-2 gap-6">
           <Card className="bg-blue-50 border-blue-200">
             <CardContent className="p-6">
@@ -135,28 +135,21 @@ export function Tours() {
               <div className="space-y-3">
                 <div>
                   <h4 className="font-medium text-green-800 mb-1">Flora</h4>
-                  <p className="text-sm text-gray-700">
-                    Árboles gigantes, orquídeas, plantas medicinales, palmas nativas
-                  </p>
+                  <p className="text-sm text-gray-700">Árboles gigantes, orquídeas, plantas medicinales, palmas nativas</p>
                 </div>
                 <div>
                   <h4 className="font-medium text-green-800 mb-1">Fauna</h4>
-                  <p className="text-sm text-gray-700">
-                    Aves exóticas, monos aulladores, ranas coloridas, mariposas
-                  </p>
+                  <p className="text-sm text-gray-700">Aves exóticas, monos aulladores, ranas coloridas, mariposas</p>
                 </div>
                 <div>
                   <h4 className="font-medium text-green-800 mb-1">Cultura</h4>
-                  <p className="text-sm text-gray-700">
-                    Comunidades afrodescendientes e indígenas, música tradicional
-                  </p>
+                  <p className="text-sm text-gray-700">Comunidades afrodescendientes e indígenas, música tradicional</p>
                 </div>
               </div>
             </CardContent>
           </Card>
         </div>
 
-        {/* Información importante */}
         <Card className="mt-6 border-yellow-200 bg-yellow-50">
           <CardContent className="p-6">
             <h3 className="text-xl mb-3">Información Importante</h3>
@@ -170,6 +163,17 @@ export function Tours() {
           </CardContent>
         </Card>
       </div>
+
+      {reservando && (
+        <ReservaModal
+          open={!!reservando}
+          onOpenChange={open => { if (!open) setReservando(null); }}
+          tipo="tour"
+          itemId={reservando.id}
+          itemNombre={reservando.nombre}
+          precio={reservando.precio}
+        />
+      )}
     </div>
   );
 }

@@ -22,7 +22,8 @@ export function Navbar() {
     { to: '/restaurantes', label: 'Restaurantes' },
     { to: '/tours', label: 'Tours' },
     { to: '/historia', label: 'Historia' },
-    { to: '/opiniones', label: 'Opiniones' }
+    { to: '/opiniones', label: 'Opiniones' },
+    ...(isAuthenticated ? [{ to: '/mis-reservas', label: 'Mis Reservas' }] : []),
   ];
 
   return (

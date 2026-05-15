@@ -9,6 +9,7 @@ import { Restaurantes } from './pages/Restaurantes';
 import { Tours } from './pages/Tours';
 import { Historia } from './pages/Historia';
 import { Opiniones } from './pages/Opiniones';
+import { MisReservas } from './pages/MisReservas';
 
 function Layout({ children }: { children: React.ReactNode }) {
   return (
@@ -68,6 +69,10 @@ export const router = createBrowserRouter([
   {
     path: '/opiniones',
     element: <Layout><Opiniones /></Layout>
+  },
+  {
+    path: '/mis-reservas',
+    element: <Layout><MisReservas /></Layout>
   },
   {
     path: '*',

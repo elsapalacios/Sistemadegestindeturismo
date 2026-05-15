@@ -6,9 +6,11 @@ import { Hotel, MapPin, Phone, Wifi, Coffee, Car, Wind } from 'lucide-react';
 import { ImageWithFallback } from '../components/figma/ImageWithFallback';
 import { api } from '../api';
 import type { Hospedaje as HospedajeType } from '../data/tourismData';
+import { ReservaModal } from '../components/ReservaModal';
 
 export function Hospedaje() {
   const [hospedajes, setHospedajes] = useState<HospedajeType[]>([]);
+  const [reservando, setReservando] = useState<HospedajeType | null>(null);
 
   useEffect(() => {
     api.getHospedajes().then(setHospedajes).catch(() => {});
@@ -27,7 +29,6 @@ export function Hospedaje() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
       <div className="bg-gradient-to-r from-emerald-600 to-teal-600 text-white py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center gap-3 mb-4">
@@ -46,7 +47,6 @@ export function Hospedaje() {
           {hospedajes.map(hotel => (
             <Card key={hotel.id} className="overflow-hidden hover:shadow-xl transition-shadow">
               <div className="grid md:grid-cols-5 gap-0">
-                {/* Imagen */}
                 <div className="md:col-span-2 h-64 md:h-auto overflow-hidden">
                   <ImageWithFallback
                     src={hotel.imagen}
@@ -55,7 +55,6 @@ export function Hospedaje() {
                   />
                 </div>
 
-                {/* Contenido */}
                 <div className="md:col-span-3 p-6">
                   <div className="flex flex-col h-full">
                     <div className="flex-1">
@@ -68,7 +67,6 @@ export function Hospedaje() {
 
                       <p className="text-gray-600 mb-4">{hotel.descripcion}</p>
 
-                      {/* Servicios */}
                       <div className="mb-4">
                         <h3 className="text-sm text-gray-500 mb-2">Servicios incluidos:</h3>
                         <div className="flex flex-wrap gap-2">
@@ -84,7 +82,6 @@ export function Hospedaje() {
                         </div>
                       </div>
 
-                      {/* Información de contacto */}
                       <div className="space-y-2 text-sm text-gray-600">
                         <div className="flex items-center gap-2">
                           <MapPin className="size-4 text-emerald-600" />
@@ -97,13 +94,21 @@ export function Hospedaje() {
                       </div>
                     </div>
 
-                    {/* Botones */}
                     <div className="flex gap-3 mt-4">
-                      <Button className="flex-1 bg-emerald-600 hover:bg-emerald-700">
+                      <Button
+                        className="flex-1 bg-emerald-600 hover:bg-emerald-700"
+                        onClick={() => setReservando(hotel)}
+                      >
                         Reservar Ahora
                       </Button>
-                      <Button variant="outline" className="flex-1">
-                        Más Información
+                      <Button variant="outline" className="flex-1" asChild>
+                        <a
+                          href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(hotel.direccion + ', Quibdó, Colombia')}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          Cómo Llegar
+                        </a>
                       </Button>
                     </div>
                   </div>
@@ -113,7 +118,6 @@ export function Hospedaje() {
           ))}
         </div>
 
-        {/* Información adicional */}
         <Card className="mt-8 bg-blue-50 border-blue-200">
           <CardContent className="p-6">
             <h3 className="text-xl mb-3">Consejos para tu Hospedaje</h3>
@@ -127,6 +131,17 @@ export function Hospedaje() {
           </CardContent>
         </Card>
       </div>
+
+      {reservando && (
+        <ReservaModal
+          open={!!reservando}
+          onOpenChange={open => { if (!open) setReservando(null); }}
+          tipo="hospedaje"
+          itemId={reservando.id}
+          itemNombre={reservando.nombre}
+          precio={reservando.precio}
+        />
+      )}
     </div>
   );
 }
