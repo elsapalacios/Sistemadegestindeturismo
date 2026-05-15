@@ -18,7 +18,7 @@ export function Register() {
   const { register } = useAuth();
   const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
 
@@ -37,7 +37,7 @@ export function Register() {
       return;
     }
 
-    const success = register(name, email, password);
+    const success = await register(name, email, password);
     if (success) {
       navigate('/');
     } else {

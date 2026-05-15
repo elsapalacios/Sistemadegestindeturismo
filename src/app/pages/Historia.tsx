@@ -1,10 +1,20 @@
+import { useState, useEffect } from 'react';
 import { Card, CardContent } from '../components/ui/card';
 import { Book, Users, Leaf, Music, Utensils, MapPin } from 'lucide-react';
-import { historiaQuibdo, eventosCulturales } from '../data/tourismData';
 import { Badge } from '../components/ui/badge';
 import { ImageWithFallback } from '../components/figma/ImageWithFallback';
+import { api } from '../api';
+import type { HistoriaQuibdo, EventoCultural } from '../data/tourismData';
 
 export function Historia() {
+  const [historia, setHistoria] = useState<HistoriaQuibdo | null>(null);
+  const [eventos, setEventos] = useState<EventoCultural[]>([]);
+
+  useEffect(() => {
+    api.getHistoria().then(setHistoria).catch(() => {});
+    api.getEventos().then(setEventos).catch(() => {});
+  }, []);
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
@@ -15,7 +25,7 @@ export function Historia() {
             <h1 className="text-4xl md:text-5xl">Historia y Cultura</h1>
           </div>
           <p className="text-xl max-w-3xl">
-            Descubre la rica historia de Quibdó y la forma de vida del Pacífico colombiano. 
+            Descubre la rica historia de Quibdó y la forma de vida del Pacífico colombiano.
             Una cultura vibrante que es Patrimonio Cultural Inmaterial de la Humanidad.
           </p>
         </div>
@@ -31,7 +41,7 @@ export function Historia() {
                 <h2 className="text-3xl">Historia de Quibdó</h2>
               </div>
               <p className="text-gray-700 leading-relaxed mb-4">
-                {historiaQuibdo.resumen}
+                {historia?.resumen}
               </p>
               <div className="h-64 rounded-lg overflow-hidden mb-4">
                 <ImageWithFallback
@@ -54,7 +64,7 @@ export function Historia() {
                   <h3 className="text-2xl">Cultura y Tradiciones</h3>
                 </div>
                 <p className="text-gray-700 leading-relaxed">
-                  {historiaQuibdo.cultura}
+                  {historia?.cultura}
                 </p>
               </CardContent>
             </Card>
@@ -66,7 +76,7 @@ export function Historia() {
                   <h3 className="text-2xl">Economía Local</h3>
                 </div>
                 <p className="text-gray-700 leading-relaxed">
-                  {historiaQuibdo.economia}
+                  {historia?.economia}
                 </p>
               </CardContent>
             </Card>
@@ -78,7 +88,7 @@ export function Historia() {
                   <h3 className="text-2xl">Biodiversidad</h3>
                 </div>
                 <p className="text-gray-700 leading-relaxed">
-                  {historiaQuibdo.biodiversidad}
+                  {historia?.biodiversidad}
                 </p>
               </CardContent>
             </Card>
@@ -90,7 +100,7 @@ export function Historia() {
                   <h3 className="text-2xl">Gastronomía</h3>
                 </div>
                 <p className="text-gray-700 leading-relaxed">
-                  {historiaQuibdo.gastronomia}
+                  {historia?.gastronomia}
                 </p>
               </CardContent>
             </Card>
@@ -132,7 +142,7 @@ export function Historia() {
         <section className="mb-12">
           <h2 className="text-3xl mb-6">Eventos Culturales Destacados</h2>
           <div className="grid md:grid-cols-3 gap-6">
-            {eventosCulturales.map(evento => (
+            {eventos.map(evento => (
               <Card key={evento.id} className="overflow-hidden hover:shadow-lg transition-shadow">
                 <div className="h-48 overflow-hidden">
                   <ImageWithFallback

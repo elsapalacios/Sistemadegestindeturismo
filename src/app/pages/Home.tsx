@@ -1,14 +1,25 @@
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router';
 import { Card, CardContent } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
 import { MapPin, Calendar, Utensils, ArrowRight } from 'lucide-react';
-import { zonasEmblematicas, eventosCulturales, platosTypicos } from '../data/tourismData';
 import { useAuth } from '../context/AuthContext';
 import { ImageWithFallback } from '../components/figma/ImageWithFallback';
+import { api } from '../api';
+import type { ZonaEmblematica, EventoCultural, PlatoTipico } from '../data/tourismData';
 
 export function Home() {
   const { user } = useAuth();
+  const [zonas, setZonas] = useState<ZonaEmblematica[]>([]);
+  const [eventos, setEventos] = useState<EventoCultural[]>([]);
+  const [platos, setPlatos] = useState<PlatoTipico[]>([]);
+
+  useEffect(() => {
+    api.getZonas().then(setZonas).catch(() => {});
+    api.getEventos().then(setEventos).catch(() => {});
+    api.getPlatos().then(setPlatos).catch(() => {});
+  }, []);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -29,7 +40,7 @@ export function Home() {
             Capital del Chocó - Patrimonio Cultural Inmaterial de la Humanidad
           </p>
           <p className="text-lg mb-8">
-            Descubre la magia del Pacífico colombiano, su cultura vibrante, 
+            Descubre la magia del Pacífico colombiano, su cultura vibrante,
             biodiversidad única y gastronomía exquisita
           </p>
           <div className="flex flex-wrap gap-4 justify-center">
@@ -55,7 +66,7 @@ export function Home() {
             <h2 className="text-3xl">Zonas Emblemáticas</h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {zonasEmblematicas.map(zona => (
+            {zonas.map(zona => (
               <Card key={zona.id} className="overflow-hidden hover:shadow-lg transition-shadow">
                 <div className="h-48 overflow-hidden">
                   <ImageWithFallback
@@ -87,7 +98,7 @@ export function Home() {
             </Link>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {eventosCulturales.map(evento => (
+            {eventos.map(evento => (
               <Card key={evento.id} className="overflow-hidden hover:shadow-lg transition-shadow">
                 <div className="h-48 overflow-hidden">
                   <ImageWithFallback
@@ -124,7 +135,7 @@ export function Home() {
             </Link>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-            {platosTypicos.map(plato => (
+            {platos.map(plato => (
               <Card key={plato.id} className="overflow-hidden hover:shadow-lg transition-shadow">
                 <div className="h-40 overflow-hidden">
                   <ImageWithFallback

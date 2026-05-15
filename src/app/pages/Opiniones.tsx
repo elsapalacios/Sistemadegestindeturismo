@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { MessageSquare, Star, User, Calendar, AlertCircle, Send } from 'lucide-react';
 import type { Opinion } from '../data/tourismData';
 import { useNavigate } from 'react-router';
+import { api } from '../api';
 
 export function Opiniones() {
   const { user, isAuthenticated } = useAuth();
@@ -21,49 +22,40 @@ export function Opiniones() {
   const [category, setCategory] = useState('general');
   const [successMessage, setSuccessMessage] = useState('');
 
-  // Cargar opiniones desde localStorage
   useEffect(() => {
-    const savedOpiniones = localStorage.getItem('opiniones');
-    if (savedOpiniones) {
-      setOpiniones(JSON.parse(savedOpiniones));
-    }
+    api.getOpiniones().then(setOpiniones).catch(() => {});
   }, []);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!isAuthenticated || !user) {
       navigate('/login');
       return;
     }
 
-    if (!comment.trim()) {
-      return;
+    if (!comment.trim()) return;
+
+    try {
+      const newOpinion = await api.postOpinion({
+        userId: user.id,
+        userName: user.name,
+        rating,
+        comment: comment.trim(),
+        recommendation: recommendation.trim(),
+        category,
+      });
+
+      setOpiniones([newOpinion, ...opiniones]);
+      setComment('');
+      setRecommendation('');
+      setRating(5);
+      setCategory('general');
+      setSuccessMessage('¡Gracias por compartir tu opinión!');
+      setTimeout(() => setSuccessMessage(''), 3000);
+    } catch {
+      // silently ignore
     }
-
-    const newOpinion: Opinion = {
-      id: Date.now().toString(),
-      userId: user.id,
-      userName: user.name,
-      rating,
-      comment: comment.trim(),
-      recommendation: recommendation.trim(),
-      date: new Date().toISOString(),
-      category
-    };
-
-    const updatedOpiniones = [newOpinion, ...opiniones];
-    setOpiniones(updatedOpiniones);
-    localStorage.setItem('opiniones', JSON.stringify(updatedOpiniones));
-
-    // Reset form
-    setComment('');
-    setRecommendation('');
-    setRating(5);
-    setCategory('general');
-    setSuccessMessage('¡Gracias por compartir tu opinión!');
-    
-    setTimeout(() => setSuccessMessage(''), 3000);
   };
 
   const categoryLabels: Record<string, string> = {
@@ -92,7 +84,7 @@ export function Opiniones() {
             <h1 className="text-4xl md:text-5xl">Opiniones y Recomendaciones</h1>
           </div>
           <p className="text-xl max-w-3xl">
-            Comparte tu experiencia en Quibdó y lee las opiniones de otros visitantes. 
+            Comparte tu experiencia en Quibdó y lee las opiniones de otros visitantes.
             Tu opinión ayuda a mejorar el turismo en nuestra ciudad.
           </p>
         </div>
@@ -237,7 +229,7 @@ export function Opiniones() {
                           </div>
                         </div>
                       </div>
-                      
+
                       {/* Estrellas */}
                       <div className="flex gap-1">
                         {[1, 2, 3, 4, 5].map(value => (

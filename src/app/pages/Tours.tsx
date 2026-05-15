@@ -1,11 +1,19 @@
+import { useState, useEffect } from 'react';
 import { Card, CardContent } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
 import { Compass, Clock, DollarSign, CheckCircle2, TrendingUp } from 'lucide-react';
-import { tours } from '../data/tourismData';
 import { ImageWithFallback } from '../components/figma/ImageWithFallback';
+import { api } from '../api';
+import type { Tour } from '../data/tourismData';
 
 export function Tours() {
+  const [tours, setTours] = useState<Tour[]>([]);
+
+  useEffect(() => {
+    api.getTours().then(setTours).catch(() => {});
+  }, []);
+
   const dificultadColor: Record<string, string> = {
     'Fácil': 'bg-green-600',
     'Moderada': 'bg-yellow-600',
@@ -22,7 +30,7 @@ export function Tours() {
             <h1 className="text-4xl md:text-5xl">Tours y Actividades</h1>
           </div>
           <p className="text-xl max-w-3xl">
-            Explora la biodiversidad del Chocó biogeográfico y conoce nuestra cultura. 
+            Explora la biodiversidad del Chocó biogeográfico y conoce nuestra cultura.
             Tours guiados para todos los niveles de aventura.
           </p>
         </div>

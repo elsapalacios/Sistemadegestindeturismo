@@ -1,11 +1,19 @@
+import { useState, useEffect } from 'react';
 import { Card, CardContent } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
 import { Utensils, MapPin, Phone, Clock, DollarSign } from 'lucide-react';
-import { restaurantes } from '../data/tourismData';
 import { ImageWithFallback } from '../components/figma/ImageWithFallback';
+import { api } from '../api';
+import type { Restaurante } from '../data/tourismData';
 
 export function Restaurantes() {
+  const [restaurantes, setRestaurantes] = useState<Restaurante[]>([]);
+
+  useEffect(() => {
+    api.getRestaurantes().then(setRestaurantes).catch(() => {});
+  }, []);
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
@@ -16,7 +24,7 @@ export function Restaurantes() {
             <h1 className="text-4xl md:text-5xl">Restaurantes</h1>
           </div>
           <p className="text-xl max-w-3xl">
-            Descubre los sabores únicos del Pacífico colombiano. 
+            Descubre los sabores únicos del Pacífico colombiano.
             Gastronomía tradicional con pescados frescos, coco y los mejores ingredientes locales.
           </p>
         </div>
@@ -118,15 +126,15 @@ export function Restaurantes() {
             </h3>
             <div className="space-y-2 text-gray-700">
               <p>
-                La cocina del Pacífico colombiano es única por su uso del coco en casi todas las 
+                La cocina del Pacífico colombiano es única por su uso del coco en casi todas las
                 preparaciones, desde arroces hasta sopas y postres.
               </p>
               <p>
-                El pescado fresco del río Atrato y el océano Pacífico es la base de muchos platos. 
+                El pescado fresco del río Atrato y el océano Pacífico es la base de muchos platos.
                 Se prepara de diversas formas: frito, en sancocho, tapado, o en cazuela.
               </p>
               <p>
-                Los plátanos (verdes y maduros), la yuca, el ñame y el chontaduro son 
+                Los plátanos (verdes y maduros), la yuca, el ñame y el chontaduro son
                 acompañamientos tradicionales.
               </p>
               <p className="text-sm italic">

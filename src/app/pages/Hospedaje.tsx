@@ -1,11 +1,19 @@
+import { useState, useEffect } from 'react';
 import { Card, CardContent } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
 import { Hotel, MapPin, Phone, Wifi, Coffee, Car, Wind } from 'lucide-react';
-import { hospedajes } from '../data/tourismData';
 import { ImageWithFallback } from '../components/figma/ImageWithFallback';
+import { api } from '../api';
+import type { Hospedaje as HospedajeType } from '../data/tourismData';
 
 export function Hospedaje() {
+  const [hospedajes, setHospedajes] = useState<HospedajeType[]>([]);
+
+  useEffect(() => {
+    api.getHospedajes().then(setHospedajes).catch(() => {});
+  }, []);
+
   const serviciosIcons: Record<string, any> = {
     'WiFi gratis': Wifi,
     'WiFi': Wifi,
@@ -27,7 +35,7 @@ export function Hospedaje() {
             <h1 className="text-4xl md:text-5xl">Hospedaje en Quibdó</h1>
           </div>
           <p className="text-xl max-w-3xl">
-            Encuentra el alojamiento perfecto para tu estadía. 
+            Encuentra el alojamiento perfecto para tu estadía.
             Desde hoteles modernos hasta hostales acogedores con la calidez chocoana.
           </p>
         </div>
