@@ -2,11 +2,11 @@
 -- Base de datos de turismo de Quibdó
 -- ============================================================
 
-CREATE DATABASE IF NOT EXISTS turismo
-  CHARACTER SET utf8mb4
-  COLLATE utf8mb4_unicode_ci;
+--CREATE DATABASE IF NOT EXISTS turismo
+--  CHARACTER SET utf8mb4
+--  COLLATE utf8mb4_unicode_ci;
 
-USE turismo;
+-- USE turismo;
 
 -- ------------------------------------------------------------
 -- Tabla: usuarios

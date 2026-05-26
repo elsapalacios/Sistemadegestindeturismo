@@ -25,8 +25,9 @@ export function Historia() {
             <h1 className="text-4xl md:text-5xl">Historia y Cultura</h1>
           </div>
           <p className="text-xl max-w-3xl">
-            Descubre la rica historia de Quibdó y la forma de vida del Pacífico colombiano.
-            Una cultura vibrante que es Patrimonio Cultural Inmaterial de la Humanidad.
+            Descubre la rica historia de Quibdó y la forma de vida del Pacífico
+            colombiano. Una cultura vibrante que es Patrimonio Cultural
+            Inmaterial de la Humanidad.
           </p>
         </div>
       </div>
@@ -41,11 +42,24 @@ export function Historia() {
                 <h2 className="text-3xl">Historia de Quibdó</h2>
               </div>
               <p className="text-gray-700 leading-relaxed mb-4">
-                {historia?.resumen}
+                Quibdó es la capital del departamento de Chocó, ubicada en el
+                occidente de Colombia. Es una ciudad rica en cultura
+                afrocolombiana e indígena. El río Atrato ha sido históricamente
+                la arteria vital de la ciudad, facilitando el comercio y la
+                comunicación.
+              </p>
+              <p className="text-gray-700 leading-relaxed mb-4">
+                La historia de Quibdó comenzó en 1648, cuando el
+                fraile Matías Abad fundó el primer poblado con el nombre de
+                Citará. Tras ser destruido por los indígenas, los jesuitas lo
+                reconstruyeron en 1654. Décadas más tarde, en 1690, el colono
+                Manuel Cañizales trasladó el asentamiento a su ubicación actual,
+                consolidándose formalmente en 1702 como el municipio de San
+                Francisco de Quibdó.
               </p>
               <div className="h-64 rounded-lg overflow-hidden mb-4">
                 <ImageWithFallback
-                  src="https://images.unsplash.com/photo-1559555686-44c2dd5fb708?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxRdWliZG8lMjBDb2xvbWJpYSUyMGNpdHl8ZW58MXx8fHwxNzc1MTg4NDA2fDA&ixlib=rb-4.1.0&q=80&w=1080"
+                  src="./src/imports/inicio.png"
                   alt="Quibdó histórico"
                   className="w-full h-full object-cover"
                 />
@@ -116,21 +130,44 @@ export function Historia() {
                 <div>
                   <h3 className="text-xl mb-3">Vida Cotidiana</h3>
                   <ul className="space-y-2 text-gray-700">
-                    <li>• El río Atrato es el centro de la vida diaria, usado para transporte y comercio</li>
-                    <li>• La música (chirimía, currulao) acompaña eventos sociales y celebraciones</li>
-                    <li>• Las comidas familiares son momentos importantes de reunión</li>
-                    <li>• El mercado local es punto de encuentro y comercio tradicional</li>
-                    <li>• La religiosidad se manifiesta en festividades y procesiones</li>
+                    <li>
+                      • El río Atrato es el centro de la vida diaria, usado para
+                      transporte y comercio
+                    </li>
+                    <li>
+                      • La música (chirimía, currulao) acompaña eventos sociales
+                      y celebraciones
+                    </li>
+                    <li>
+                      • Las comidas familiares son momentos importantes de
+                      reunión
+                    </li>
+                    <li>
+                      • El mercado local es punto de encuentro y comercio
+                      tradicional
+                    </li>
+                    <li>
+                      • La religiosidad se manifiesta en festividades y
+                      procesiones
+                    </li>
                   </ul>
                 </div>
                 <div>
                   <h3 className="text-xl mb-3">Costumbres y Tradiciones</h3>
                   <ul className="space-y-2 text-gray-700">
-                    <li>• Celebración del Festival de San Pacho (septiembre-octubre)</li>
-                    <li>• Prácticas de medicina tradicional con plantas locales</li>
+                    <li>
+                      • Celebración del Festival de San Pacho
+                      (septiembre-octubre)
+                    </li>
+                    <li>
+                      • Prácticas de medicina tradicional con plantas locales
+                    </li>
                     <li>• Artesanías en tagua, madera y cestería</li>
                     <li>• Bailes tradicionales como el currulao y la jota</li>
-                    <li>• Narrativa oral: cuentos, leyendas y tradiciones ancestrales</li>
+                    <li>
+                      • Narrativa oral: cuentos, leyendas y tradiciones
+                      ancestrales
+                    </li>
                   </ul>
                 </div>
               </div>
@@ -142,8 +179,11 @@ export function Historia() {
         <section className="mb-12">
           <h2 className="text-3xl mb-6">Eventos Culturales Destacados</h2>
           <div className="grid md:grid-cols-3 gap-6">
-            {eventos.map(evento => (
-              <Card key={evento.id} className="overflow-hidden hover:shadow-lg transition-shadow">
+            {eventos.map((evento) => (
+              <Card
+                key={evento.id}
+                className="overflow-hidden hover:shadow-lg transition-shadow"
+              >
                 <div className="h-48 overflow-hidden">
                   <ImageWithFallback
                     src={evento.imagen}
@@ -154,7 +194,9 @@ export function Historia() {
                 <CardContent className="p-4">
                   <Badge className="mb-2 bg-purple-600">{evento.fecha}</Badge>
                   <h3 className="mb-2">{evento.nombre}</h3>
-                  <p className="text-gray-600 text-sm mb-3">{evento.descripcion}</p>
+                  <p className="text-gray-600 text-sm mb-3">
+                    {evento.descripcion}
+                  </p>
                   <div className="flex items-center gap-1 text-gray-500 text-xs">
                     <MapPin className="size-3" />
                     {evento.ubicacion}
@@ -171,14 +213,31 @@ export function Historia() {
             <h3 className="text-2xl mb-4">¿Sabías que...?</h3>
             <div className="grid md:grid-cols-2 gap-4">
               <ul className="space-y-2 text-gray-800">
-                <li>✨ El Festival de San Pacho fue declarado Patrimonio Cultural Inmaterial de la Humanidad por la UNESCO en 2012</li>
-                <li>✨ El Chocó es uno de los lugares con mayor biodiversidad y pluviosidad del planeta</li>
-                <li>✨ Quibdó fue fundada en 1654 por franciscanos españoles</li>
+                <li>
+                  - El Festival de San Pacho fue declarado Patrimonio Cultural
+                  Inmaterial de la Humanidad por la UNESCO en 2012
+                </li>
+                <li>
+                  - El Chocó es uno de los lugares con mayor biodiversidad y
+                  pluviosidad del planeta
+                </li>
+                <li>
+                  - Quibdó fue fundada en 1654 por franciscanos españoles
+                </li>
               </ul>
               <ul className="space-y-2 text-gray-800">
-                <li>✨ El río Atrato es considerado sujeto de derechos por la Corte Constitucional colombiana</li>
-                <li>✨ La población es mayoritariamente afrodescendiente, con influencia indígena</li>
-                <li>✨ La música del Pacífico colombiano tiene raíces africanas muy marcadas</li>
+                <li>
+                  - El río Atrato es considerado sujeto de derechos por la
+                  Corte Constitucional colombiana
+                </li>
+                <li>
+                  - La población es mayoritariamente afrodescendiente, con
+                  influencia indígena
+                </li>
+                <li>
+                  - La música del Pacífico colombiano tiene raíces africanas
+                  muy marcadas
+                </li>
               </ul>
             </div>
           </CardContent>
